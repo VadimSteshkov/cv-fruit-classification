@@ -1,43 +1,57 @@
-# Virtual Environment
+# ── Virtual environment ──────────────────────────────────────
 venv/
 .venv/
 env/
 ENV/
 
-# Dataset
+# ── Dataset (downloaded via FiftyOne) ────────────────────────
 data/
 
-# Python cache
+# ── Saved model weights ─────────────────────────────────────
+models/
+*.h5
+*.keras
+*.hdf5
+*.ckpt
+*.ckpt.*
+*.pb
+saved_model/
+
+# ── Python cache ─────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *.so
 
-# Jupyter
+# ── Jupyter ──────────────────────────────────────────────────
 .ipynb_checkpoints/
 
-# IDE
+# ── IDE ──────────────────────────────────────────────────────
 .idea/
 .vscode/
+*.swp
+*.swo
 
-# OS files
+# ── OS files ─────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
-# Logs
+# ── Logs & experiment trackers ───────────────────────────────
 *.log
+logs/
+keras_logs/
+wandb/
+mlruns/
 
-# Model weights
-*.pth
-*.pt
-*.ckpt
-
-# Build artifacts
+# ── Build artifacts ──────────────────────────────────────────
 build/
 dist/
 *.egg-info/
 
-# Temporary files
+# ── Temporary files ──────────────────────────────────────────
 *.tmp
 *.bak
+
+# ── FiftyOne local database ──────────────────────────────────
+.fiftyone/

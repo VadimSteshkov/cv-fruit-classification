@@ -1,0 +1,179 @@
+===============================================================
+  QUICKSTART — CV Fruit Classification (Project K)
+===============================================================
+
+This guide gets you from zero to a working project in 5 minutes.
+Follow every step in order.
+
+
+---------------------------------------------------------------
+  PREREQUISITES
+---------------------------------------------------------------
+
+- Python 3.10 or 3.11 or 3.13 (any of these work)
+- Git installed
+- ~4 GB free disk space (for the Open Images V7 dataset download)
+
+
+---------------------------------------------------------------
+  STEP 1 — Clone the repository
+---------------------------------------------------------------
+
+  git clone https://github.com/VadimSteshkov/cv-fruit-classification.git
+  cd cv-fruit-classification
+
+
+---------------------------------------------------------------
+  STEP 2 — Create a virtual environment
+---------------------------------------------------------------
+
+Linux / macOS:
+
+  python3 -m venv venv
+  source venv/bin/activate
+
+Windows (PowerShell):
+
+  python -m venv venv
+  venv\Scripts\activate
+
+NOTE: If you already have a shared venv, activate that instead.
+
+
+---------------------------------------------------------------
+  STEP 3 — Install dependencies
+---------------------------------------------------------------
+
+  pip install --upgrade pip
+  pip install -r requirements.txt
+
+This installs TensorFlow, FiftyOne, NumPy, Pandas, Matplotlib,
+Seaborn, scikit-learn, OpenCV, Pillow, Jupyter, and more.
+
+
+---------------------------------------------------------------
+  STEP 4 — Verify TensorFlow
+---------------------------------------------------------------
+
+  python scripts/verify_tf.py
+
+Expected output:
+  TensorFlow version : 2.x.x
+  Keras version      : 3.x.x
+  GPUs detected      : 0 (or 1 if you have a CUDA GPU)
+
+CPU-only is fine — training will just be slower.
+
+
+---------------------------------------------------------------
+  STEP 5 — Download and prepare the dataset
+---------------------------------------------------------------
+
+  python scripts/prepare_dataset_oiv7.py --out data --max-samples 3000 --seed 42
+
+This does the following:
+  1. Downloads Open Images V7 detection data via FiftyOne (~2-4 GB first time)
+  2. Crops each bounding box into a classification patch
+  3. Splits patches 75% train / 25% test
+  4. Exports to data/train/{Apple,Banana,Lemon}/ and data/test/{Apple,Banana,Lemon}/
+  5. Saves metadata to data/dataset_info.json
+
+First run takes a few minutes (download). Subsequent runs use cached data.
+
+When finished you should see:
+  ============================================================
+  Done. Dataset is ready.
+  ============================================================
+
+
+---------------------------------------------------------------
+  STEP 6 — Verify the dataset
+---------------------------------------------------------------
+
+Linux / macOS:
+
+  ls data/train/Apple/ | wc -l
+  ls data/train/Banana/ | wc -l
+  ls data/train/Lemon/ | wc -l
+
+Windows (PowerShell):
+
+  (Get-ChildItem data\train\Apple).Count
+  (Get-ChildItem data\train\Banana).Count
+  (Get-ChildItem data\train\Lemon).Count
+
+Expected (approximate):
+  Apple  — ~2900 images
+  Banana — ~1200 images
+  Lemon  — ~1350 images
+
+
+---------------------------------------------------------------
+  STEP 7 — Run the data exploration notebook
+---------------------------------------------------------------
+
+  cd notebooks
+  jupyter notebook 01_data_exploration.ipynb
+
+In the browser: Kernel → Restart & Run All
+
+This generates:
+  - Class distribution charts
+  - Sample images from each class
+  - Image dimension analysis (width, height, aspect ratio)
+  - Pixel intensity / colour channel analysis
+  - Observations about the dataset
+
+Plots are saved automatically to the reports/ folder.
+
+
+---------------------------------------------------------------
+  TROUBLESHOOTING
+---------------------------------------------------------------
+
+Problem: FiftyOne gives a MongoDB deprecation warning
+  → Safe to ignore. Add database_validation=False to your
+    FiftyOne config if it bothers you.
+
+Problem: "No module named fiftyone"
+  → Make sure your virtual environment is activated and run:
+    pip install -r requirements.txt
+
+Problem: TensorFlow not found or wrong version
+  → pip install --upgrade tensorflow
+
+Problem: CUDA error / GPU not detected
+  → Training will fall back to CPU automatically.
+    For GPU support, install CUDA toolkit matching your
+    TensorFlow version (see tensorflow.org/install).
+
+Problem: "Only found XXXX (<3000) samples"
+  → Normal. Open Images V7 has a limited number of images
+    for some classes. The script uses whatever is available.
+
+
+---------------------------------------------------------------
+  PROJECT STRUCTURE
+---------------------------------------------------------------
+
+  cv-fruit-classification/
+  ├── README.md                        # Full project plan and docs
+  ├── QUICKSTART.txt                   # This file
+  ├── requirements.txt                 # Pinned dependencies
+  ├── .gitignore
+  ├── scripts/
+  │   ├── prepare_dataset_oiv7.py      # Dataset download + split
+  │   └── verify_tf.py                 # TF/GPU check
+  ├── notebooks/
+  │   └── 01_data_exploration.ipynb    # Data exploration (C1)
+  ├── src/                             # Training code (added in C2+)
+  ├── reports/                         # Saved plots and metrics
+  ├── models/                          # Saved weights (git-ignored)
+  └── data/                            # Dataset (git-ignored)
+      ├── train/ Apple|Banana|Lemon/
+      └── test/  Apple|Banana|Lemon/
+
+
+===============================================================
+  That's it! You're ready to go.
+===============================================================
