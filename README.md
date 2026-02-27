@@ -1,37 +1,182 @@
-# CV Fruit Classification
+# CV Fruit Classification — Project K
 
-Computer Vision project: Image classification of Apple, Banana and Lemon using Open Images Dataset and VGG16.
+Computer Vision AI course project: **image classification** of three fruit categories
+from the **Open Images Dataset V7** using **Keras / TensorFlow**.
 
-## Project Structure
+| Item | Detail |
+|------|--------|
+| **Classes** | Apple · Banana · Lemon |
+| **Source** | [Open Images V7 — detection task](https://storage.googleapis.com/openimages/web/visualizer/index.html?type=detection) |
+| **Base model** | VGG-16 |
+| **Train / Test split** | 75 / 25 |
+| **Framework** | TensorFlow ≥ 2.15 / Keras |
+
+---
+
+## Experiments overview
+
+| # | Experiment | Description |
+|---|-----------|-------------|
+| E1 | **VGG-16 from scratch** | Randomly initialised weights, train and evaluate |
+| E2 | **Transfer learning** | ImageNet-pretrained VGG-16, compare loss & accuracy vs E1 over the first 10 epochs |
+| E3 | **Data augmentation** | Random rotate, random translate, random crop — retrain and discuss |
+| E4 | **Custom architecture** | Rebuild VGG-19 with bottleneck block after `block4_conv4`, freeze conv3 and earlier |
+
+### E4 — Architecture detail (from project spec)
+
+After `block4_conv4 (32, 32, 512)` add:
+
+1. **Bottleneck** (padding `same`)
+2. Conv2D — kernel 1×1, 1024 filters, padding `valid`, stride 1, activation **LeakyReLU**
+3. Conv2D — kernel 3×3, 1024 filters, padding `same`, stride 1, activation **ReLU**
+4. Freeze all layers in `conv3` block and before
+5. Prediction head: Flatten → Dense (fully connected) → Softmax (3 classes)
+
+### Required analysis
+
+- Dataset exploration: classes, distribution, imbalances, image observations
+- Accuracy on train set vs test set
+- Training infrastructure and inference time
+- Number of model parameters
+- Confusion matrix — which categories are confused?
+- Test with own images + **activation maps** (GradCAM or similar)
+- **Comparison table** across all experiments
+
+---
+
+## Weekly commit plan (6 milestones)
+
+Each team member works on their own branch (`dev/<initials>`) and merges to `main`
+with one clean commit per milestone.
+
+| Week | Commit | Content | Points |
+|------|--------|---------|--------|
+| 1 | **C1 — Foundation** | README, reproducible setup, dataset pipeline (OIV7→patches), full data exploration (distribution, imbalances, observations) | 20 P |
+| 2 | **C2 — Baseline** | VGG-16 from scratch: model build, training loop, evaluation, loss/accuracy curves | 10 + 15 P |
+| 3 | **C3 — Transfer learning** | VGG-16 pretrained (ImageNet), freeze/unfreeze, side-by-side comparison plots (10 epochs) | 10 P |
+| 4 | **C4 — Augmentation** | RandomRotation, RandomTranslation, RandomCrop — retrain, compare, discuss | 10 P |
+| 5 | **C5 — Architecture** | VGG-19 + bottleneck rebuild, freeze conv3 and before, train, evaluate | 10 P |
+| 6 | **C6 — Final** | Own test images, activation maps, confusion matrices, parameter counts, inference time, comparison table, presentation slides | 20 + 5 P |
+
+---
+
+## Project structure
 
 ```text
-data/
-    raw/        # downloaded dataset
-    train/      # 75% split
-    test/       # 25% split
-src/            # training scripts
-models/         # saved models
+cv-fruit-classification/
+├── README.md                        # this file
+├── requirements.txt                 # pinned dependencies
+├── .gitignore
+├── scripts/
+│   ├── prepare_dataset_oiv7.py      # OIV7 download → classification patches (75/25)
+│   └── verify_tf.py                 # quick TF + GPU check
+├── notebooks/
+│   └── 01_data_exploration.ipynb    # C1: full EDA (distribution, samples, observations)
+├── src/                             # training / evaluation code (added in C2+)
+├── reports/                         # saved plots, metrics JSON (small files only)
+├── models/                          # saved weights (git-ignored)
+└── data/                            # dataset (git-ignored)
+    ├── train/
+    │   ├── Apple/
+    │   ├── Banana/
+    │   └── Lemon/
+    └── test/
+        ├── Apple/
+        ├── Banana/
+        └── Lemon/
 ```
-## Setup
 
-1. Create virtual environment:
-   python -m venv venv
-   venv\Scripts\activate
+---
 
-2. Install dependencies:
-   pip install -r requirements.txt
+## Setup — step by step
 
-3. Download dataset:
-   oidv6 downloader --dataset data\raw --type_data train --classes Apple Banana Lemon --limit 1000 --yes
+### 0. Prerequisites
 
-4. Split dataset:
-   python src\01_split_train_test.py
+- Python **3.10** or **3.11**
+- (Optional) NVIDIA GPU + CUDA for faster training
 
-## Model
+### 1. Clone the repository
 
-- Base architecture: VGG16
-- Experiments:
-  - Training from scratch
-  - Transfer learning
-  - Data augmentation
-  - Confusion matrix evaluation
+```bash
+git clone https://github.com/VadimSteshkov/cv-fruit-classification.git
+cd cv-fruit-classification
+```
+
+### 2. Create and activate a virtual environment
+
+**Linux / macOS**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**Windows (PowerShell)**
+```powershell
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 4. Verify TensorFlow / Keras
+
+```bash
+python scripts/verify_tf.py
+```
+
+Expected output: TensorFlow version, number of GPUs detected.
+
+### 5. Download and prepare the dataset
+
+The script uses **FiftyOne** to download Open Images V7 detection labels,
+crops each annotated object into a classification patch, and exports
+a 75/25 train/test directory tree.
+
+```bash
+python scripts/prepare_dataset_oiv7.py --out data --max-samples 3000 --seed 42
+```
+
+This creates `data/train/{Apple,Banana,Lemon}/` and `data/test/{Apple,Banana,Lemon}/`.
+
+> **Note:** The first run downloads ~2–4 GB from Google storage.
+> Subsequent runs with the same `--dataset-name` will reuse the FiftyOne cache.
+
+### 6. Run the data exploration notebook
+
+```bash
+jupyter notebook notebooks/01_data_exploration.ipynb
+```
+
+---
+
+## Reproducibility checklist
+
+- [x] All random seeds fixed (`--seed 42` for dataset, `tf.random.set_seed(42)` in training)
+- [x] Dependencies pinned in `requirements.txt`
+- [x] Dataset generated from public source with deterministic split
+- [x] No large files committed (data, models, venv are git-ignored)
+- [x] Code tested on Python 3.10 + TensorFlow 2.15
+
+---
+
+## Team
+
+| Member | Branch |
+|--------|--------|
+| Dorin (AVD) | `dev/avd` |
+| Member 2 | `dev/<initials>` |
+| Member 3 | `dev/<initials>` |
+
+---
+
+## Rules
+
+- Do **not** commit `data/`, `venv/`, or model weight files.
+- Keep all experiments reproducible (fixed seeds, documented hyperparameters).
+- Always compare experiments using the **same** train/test split and evaluation pipeline.
+- Code must be **executable end-to-end** from a fresh clone.
