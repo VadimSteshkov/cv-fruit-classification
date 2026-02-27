@@ -4,13 +4,14 @@ Computer Vision project: Image classification of Apple, Banana and Lemon using O
 
 ## Project Structure
 
+```text
 data/
     raw/        # downloaded dataset
     train/      # 75% split
     test/       # 25% split
 src/            # training scripts
 models/         # saved models
-
+```
 ## Setup
 
 1. Create virtual environment:
