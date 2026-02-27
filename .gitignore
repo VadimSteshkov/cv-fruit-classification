@@ -1,18 +1,43 @@
-# virtual environment
+# Virtual Environment
 venv/
 .venv/
+env/
+ENV/
 
-# dataset
+# Dataset
 data/
 
-# python cache
+# Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Jupyter
+.ipynb_checkpoints/
 
 # IDE
 .idea/
 .vscode/
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+
+# Model weights
+*.pth
+*.pt
+*.ckpt
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Temporary files
+*.tmp
+*.bak
