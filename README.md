@@ -123,6 +123,7 @@ venv\Scripts\activate
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
+pip freeze > requirements.lock.txt
 ```
 
 ### 4. Verify TensorFlow / Keras
