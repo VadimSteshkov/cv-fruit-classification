@@ -2,9 +2,6 @@
 tensorflow>=2.15.0
 numpy>=2.1.0
 
-# ── Dataset (Open Images V7 via FiftyOne) ───────────────────
-fiftyone>=0.23.0
-
 # ── Data handling & visualisation ───────────────────────────
 pandas>=2.0.0
 matplotlib>=3.7.0

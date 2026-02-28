@@ -46,6 +46,7 @@ NOTE: If you already have a shared venv, activate that instead.
 
   pip install --upgrade pip
   pip install -r requirements.txt
+  pip freeze > requirements.lock.txt
 
 This installs TensorFlow, FiftyOne, NumPy, Pandas, Matplotlib,
 Seaborn, scikit-learn, OpenCV, Pillow, Jupyter, and more.
