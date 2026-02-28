@@ -75,7 +75,7 @@ This does the following:
   1. Downloads Open Images V7 detection data via FiftyOne (~2-4 GB first time)
   2. Crops each bounding box into a classification patch
   3. Splits patches 75% train / 25% test
-  4. Exports to data/train/{Apple,Banana,Lemon}/ and data/test/{Apple,Banana,Lemon}/
+  4. Exports to data/train/{Apple,Banana,Lemon}/ and data/test/...
   5. Saves metadata to data/dataset_info.json
 
 First run takes a few minutes (download). Subsequent runs use cached data.
@@ -109,20 +109,19 @@ Expected (approximate):
 
 
 ---------------------------------------------------------------
-  STEP 7 — Run the data exploration notebook
+  STEP 7 — Open the project notebook
 ---------------------------------------------------------------
 
-  cd notebooks
-  jupyter notebook 01_data_exploration.ipynb
+  jupyter notebook project_k.ipynb
 
 In the browser: Kernel → Restart & Run All
 
-This generates:
-  - Class distribution charts
-  - Sample images from each class
-  - Image dimension analysis (width, height, aspect ratio)
-  - Pixel intensity / colour channel analysis
-  - Observations about the dataset
+This is the MAIN DELIVERABLE — a single notebook containing:
+  - Data exploration and analysis
+  - All 4 experiments (VGG-16 scratch, transfer learning,
+    augmentation, custom architecture)
+  - Own test images + activation maps
+  - Confusion matrices + final comparison
 
 Plots are saved automatically to the reports/ folder.
 
@@ -157,21 +156,17 @@ Problem: "Only found XXXX (<3000) samples"
 ---------------------------------------------------------------
 
   cv-fruit-classification/
-  ├── README.md                        # Full project plan and docs
-  ├── QUICKSTART.txt                   # This file
-  ├── requirements.txt                 # Pinned dependencies
+  ├── project_k.ipynb              ← MAIN NOTEBOOK (run this)
+  ├── README.md                    # Full project plan and docs
+  ├── QUICKSTART.txt               # This file
+  ├── requirements.txt             # Dependencies
   ├── .gitignore
   ├── scripts/
-  │   ├── prepare_dataset_oiv7.py      # Dataset download + split
-  │   └── verify_tf.py                 # TF/GPU check
-  ├── notebooks/
-  │   └── 01_data_exploration.ipynb    # Data exploration (C1)
-  ├── src/                             # Training code (added in C2+)
-  ├── reports/                         # Saved plots and metrics
-  ├── models/                          # Saved weights (git-ignored)
-  └── data/                            # Dataset (git-ignored)
-      ├── train/ Apple|Banana|Lemon/
-      └── test/  Apple|Banana|Lemon/
+  │   ├── prepare_dataset_oiv7.py  # Dataset download + split
+  │   └── verify_tf.py             # TF/GPU check
+  ├── notebooks/                   # Earlier exploration (reference)
+  ├── reports/                     # Saved plots and metrics
+  └── data/                        # Dataset (git-ignored)
 
 
 ===============================================================
