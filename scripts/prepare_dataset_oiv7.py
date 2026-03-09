@@ -28,6 +28,7 @@ import json
 import os
 import random
 import shutil
+import stat
 import sys
 import time
 import urllib.error
@@ -408,11 +409,20 @@ def main():
 	# ── Step 4: Split & export ───────────────────────────────
 	print(f"\n[4/4] Splitting {args.test_frac:.0%} test and exporting ...")
 
-	# Clean existing output (but not cache)
+	# Clean existing output: remove files in each class dir (Windows-safe;
+	# shutil.rmtree can fail with WinError 145 "directory not empty")
 	for split_name in ["train", "test"]:
-		split_dir = os.path.join(out_dir, split_name)
-		if os.path.isdir(split_dir):
-			shutil.rmtree(split_dir)
+		for cls in TARGET_CLASSES:
+			cls_dir = os.path.join(out_dir, split_name, cls)
+			if os.path.isdir(cls_dir):
+				for fname in os.listdir(cls_dir):
+					fpath = os.path.join(cls_dir, fname)
+					if os.path.isfile(fpath):
+						try:
+							os.unlink(fpath)
+						except PermissionError:
+							os.chmod(fpath, stat.S_IWUSR)
+							os.unlink(fpath)
 
 	train_patches, test_patches, counters = export_patches(
 		patches, out_dir, args.test_frac, args.seed
