@@ -164,11 +164,11 @@ Then: **Kernel → Restart & Run All**.
 
 ## Team
 
-| Member | Branch |
-|--------|--------|
-| Dorin (AVD) | `dev/avd` |
-| Member 2 | `dev/<initials>` |
-| Member 3 | `dev/<initials>` |
+| Member      | Branch           |
+|-------------|------------------|
+| Dorin (AVD) | `dev/avd`        |
+| Vadim       | `dev/vadim`      |
+| Member 3    | `dev/<initials>` |
 
 ---
 
