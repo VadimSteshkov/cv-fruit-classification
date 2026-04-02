@@ -1,0 +1,5 @@
+Experiment,Model,Train accuracy,Validation accuracy,Test accuracy,Train loss,Validation loss,Test loss,Parameters,Inference time (ms/image),Most confused pair,Confusions
+C4,VGG-16 pretrained + augmentation,0.7703,0.8238,0.7992,0.5397,0.4133,0.4942,21138243,220.583,Lemon → Apple,179
+C5,VGG-19 bottleneck,0.7709,0.8907,0.7624,0.5575,0.3967,0.5693,431985731,361.462,Apple → Banana,201
+C3,VGG-16 pretrained,0.8936,0.9769,0.7572,0.2713,0.117,0.5949,21138243,221.56,Apple → Lemon,294
+C2,VGG-16 from scratch,0.7442,0.6762,0.7141,0.5952,0.7181,0.7125,21138243,218.245,Lemon → Banana,201
