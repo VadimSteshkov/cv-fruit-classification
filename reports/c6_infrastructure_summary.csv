@@ -1,0 +1,7 @@
+Field,Value
+TensorFlow,2.21.0
+Keras,3.13.2
+Python,3.13.12
+Device,CPU only
+Batch size,32
+Input size,224x224x3
