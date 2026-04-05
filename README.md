@@ -1,106 +1,121 @@
 # CV Fruit Classification — Project K
 
-Computer Vision AI course project: **image classification** of three fruit categories
-from the **Open Images Dataset V7** using **Keras / TensorFlow**.
+This repository contains the deliverables for **Project K** of the **Computer Vision in AI** course.  
+The project investigates **image classification** for three fruit classes — **Apple**, **Banana**, and **Lemon** — using images derived from the **Open Images Dataset V7** and implemented with **TensorFlow / Keras**.
 
 | Item | Detail |
 |------|--------|
+| **Task** | Multi-class image classification |
 | **Classes** | Apple · Banana · Lemon |
-| **Source** | [Open Images V7 — detection task](https://storage.googleapis.com/openimages/web/visualizer/index.html?type=detection) |
-| **Base model** | VGG-16 |
-| **Train / Test split** | 75 / 25 |
-| **Framework** | TensorFlow ≥ 2.15 / Keras |
+| **Dataset source** | Open Images Dataset V7 (detection task, converted to classification patches) |
+| **Primary frameworks** | TensorFlow / Keras |
+| **Backbone families** | VGG-16, VGG-19 |
+| **Dataset split** | 75% train / 25% test |
+| **Main deliverable** | `project_k.ipynb` |
+
+---
+
+## Project objective
+
+The objective of this project is to compare several convolutional-network configurations for fruit classification under a reproducible experimental setup.  
+The work includes:
+
+- dataset preparation and exploratory analysis,
+- a baseline VGG-16 model trained from scratch,
+- transfer learning with ImageNet-pretrained VGG-16,
+- a data-augmentation experiment,
+- a custom VGG-19 architecture with an added bottleneck block,
+- final evaluation with own images, activation maps, confusion matrices, and a consolidated comparison table.
 
 ---
 
 ## Main deliverable
 
-**`project_k.ipynb`** — a single Jupyter Notebook containing the entire project:
-dataset exploration, all experiments, results, and analysis.
-Open it, run all cells, and everything executes end-to-end.
+The complete submission is contained in:
+
+- **`project_k.ipynb`** — single end-to-end notebook containing data exploration, all experiments, training/evaluation logic, visualizations, and final analysis.
+
+The notebook is designed so that the project can be reproduced from one main file, provided that the required environment and dataset are available.
 
 ---
 
-## Experiments overview
+## Experimental scope
 
-| # | Experiment | Description |
-|---|-----------|-------------|
-| E1 | **VGG-16 from scratch** | Randomly initialised weights, train and evaluate |
-| E2 | **Transfer learning** | ImageNet-pretrained VGG-16, compare loss & accuracy vs E1 over the first 10 epochs |
-| E3 | **Data augmentation** | Random rotate, random translate, random crop — retrain and discuss |
-| E4 | **Custom architecture** | Rebuild VGG-19 with bottleneck block after `block4_conv4`, freeze conv3 and earlier |
+The notebook covers the following milestones.
 
-### E4 — Architecture detail (from project spec)
+| Milestone | Title | Description |
+|-----------|-------|-------------|
+| **C1** | Foundation | Repository setup, reproducibility preparation, dataset pipeline, and exploratory data analysis |
+| **C2** | Baseline | VGG-16 trained from scratch, including training and evaluation |
+| **C3** | Transfer learning | ImageNet-pretrained VGG-16 and comparison against the baseline over the first 10 epochs |
+| **C4** | Augmentation | Retraining with `RandomRotation`, `RandomTranslation`, and `RandomCrop` |
+| **C5** | Architecture | Custom VGG-19 configuration with a bottleneck block after `block4_conv4` |
+| **C6** | Final evaluation | Own-image predictions, activation maps, confusion matrices, infrastructure summary, and final comparison |
 
-After `block4_conv4 (32, 32, 512)` add:
+### C5 architecture specification
 
-1. **Bottleneck** (padding `same`)
-2. Conv2D — kernel 1×1, 1024 filters, padding `valid`, stride 1, activation **LeakyReLU**
-3. Conv2D — kernel 3×3, 1024 filters, padding `same`, stride 1, activation **ReLU**
-4. Freeze all layers in `conv3` block and before
-5. Prediction head: Flatten → Dense (fully connected) → Softmax (3 classes)
+The custom architecture experiment follows the project specification by rebuilding the network from **VGG-19** after `block4_conv4`, then adding:
 
-### Required analysis
-
-- Dataset exploration: classes, distribution, imbalances, image observations
-- Accuracy on train set vs test set
-- Training infrastructure and inference time
-- Number of model parameters
-- Confusion matrix — which categories are confused?
-- Test with own images + **activation maps** (GradCAM or similar)
-- **Comparison table** across all experiments
+1. a **bottleneck layer** with `padding="same"`,
+2. a **1×1 convolution** with **1024 filters**, `padding="valid"`, stride 1, followed by **LeakyReLU**,
+3. a **3×3 convolution** with **1024 filters**, `padding="same"`, stride 1, followed by **ReLU**,
+4. frozen convolutional layers in **conv3 and earlier**,
+5. a classification head using **Flatten + fully connected layers + Softmax**.
 
 ---
 
-## Weekly commit plan (6 milestones)
+## Required analysis covered in the notebook
 
-Each team member works on their own branch (`dev/<initials>`) and merges to `main`
-with one clean commit per milestone.
+The final notebook includes the analyses required by the project brief:
 
-| Week | Commit | Content | Points |
-|------|--------|---------|--------|
-| 1 | **C1 — Foundation** | README, reproducible setup, dataset pipeline, data exploration | 20 P |
-| 2 | **C2 — Baseline** | VGG-16 from scratch: model build, training, evaluation | 10 + 15 P |
-| 3 | **C3 — Transfer learning** | VGG-16 pretrained (ImageNet), 10-epoch comparison plots | 10 P |
-| 4 | **C4 — Augmentation** | RandomRotation, RandomTranslation, RandomCrop — retrain, compare | 10 P |
-| 5 | **C5 — Architecture** | VGG-19 + bottleneck rebuild, freeze conv3 and before | 10 P |
-| 6 | **C6 — Final** | Own images, activation maps, confusion matrices, comparison table | 20 + 5 P |
+- dataset exploration and visual inspection,
+- class distribution and basic image statistics,
+- comparison of training, validation, and test behaviour,
+- test-set evaluation for all experiments,
+- confusion matrices and the most frequently confused class pairs,
+- number of trainable / total parameters,
+- inference-time measurement,
+- own-image evaluation,
+- activation maps (Grad-CAM),
+- final experiment comparison table.
 
 ---
 
-## Project structure
+## Repository structure
 
 ```text
 cv-fruit-classification/
-├── project_k.ipynb              ← MAIN NOTEBOOK (all experiments, run all cells)
-├── README.md
-├── QUICKSTART.txt               # step-by-step setup for teammates
-├── requirements.txt             # dependencies (flexible versions)
-├── requirements.lock.txt        # dependencies (pinned versions)
+├── project_k.ipynb                  # main project notebook
+├── README.md                        # project overview and usage instructions
+├── QUICKSTART.txt                   # short setup guide for teammates
+├── requirements.txt                 # main dependency list
+├── requirements.lock.txt            # pinned dependency snapshot
 ├── .gitignore
 ├── scripts/
-│   ├── prepare_dataset_oiv7.py  # OIV7 download → classification patches (75/25)
-│   └── verify_tf.py             # quick TF + GPU check
-├── reports/                     # saved plots (auto-generated by notebook)
-├── src/                         # utility modules (if needed)
-└── data/                        # dataset (git-ignored, generated by script)
-    ├── train/ Apple|Banana|Lemon/
-    └── test/  Apple|Banana|Lemon/
+│   ├── prepare_dataset_oiv7.py      # dataset preparation script
+│   └── verify_tf.py                 # TensorFlow / GPU verification script
+├── reports/                         # generated plots, CSV summaries, and result artefacts
+├── own_images/                      # optional folder for external test images
+├── src/                             # optional helper modules
+└── data/                            # generated dataset (git-ignored)
+    ├── train/
+    │   ├── Apple/
+    │   ├── Banana/
+    │   └── Lemon/
+    └── test/
+        ├── Apple/
+        ├── Banana/
+        └── Lemon/
 ```
 
 ---
 
-## Setup — step by step
-
-### 0. Prerequisites
-
-- Python **3.10**, **3.11**, or **3.13**
-- (Optional) NVIDIA GPU + CUDA for faster training
+## Setup and execution
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/VadimSteshkov/cv-fruit-classification.git
+git clone <repository-url>
 cd cv-fruit-classification
 ```
 
@@ -123,42 +138,53 @@ venv\Scripts\activate
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
+```
+
+If needed, a locked snapshot of the installed environment can be regenerated with:
+
+```bash
 pip freeze > requirements.lock.txt
 ```
 
-### 4. Verify TensorFlow / Keras
+### 4. Verify TensorFlow availability
 
 ```bash
 python scripts/verify_tf.py
 ```
 
-### 5. Download and prepare the dataset
+### 5. Prepare the dataset
 
 ```bash
 python scripts/prepare_dataset_oiv7.py --out data --max-samples 3000 --seed 42
 ```
 
-This creates `data/train/{Apple,Banana,Lemon}/` and `data/test/{Apple,Banana,Lemon}/`.
+This prepares the classification dataset in:
 
-> **Note:** First run downloads ~2–4 GB from Google storage. Subsequent runs use cache.
+- `data/train/{Apple,Banana,Lemon}/`
+- `data/test/{Apple,Banana,Lemon}/`
 
-### 6. Open the project notebook
+### 6. Run the notebook
 
 ```bash
 jupyter notebook project_k.ipynb
 ```
 
-Then: **Kernel → Restart & Run All**.
+Then execute:
+
+- **Kernel → Restart & Run All**
 
 ---
 
-## Reproducibility checklist
+## Reproducibility
 
-- [x] All random seeds fixed (`--seed 42` for dataset, `tf.random.set_seed(42)` in training)
-- [x] Dependencies in `requirements.txt`
-- [x] Dataset generated from public source with deterministic split
-- [x] No large files committed (data, models, venv are git-ignored)
-- [x] Single notebook, executable end-to-end from fresh clone
+The repository is organised to support reproducible execution:
+
+- deterministic dataset preparation with fixed seed,
+- fixed random seeds in model training,
+- explicit dependency lists,
+- single-notebook execution for the full project workflow,
+- generated reports saved to the `reports/` directory,
+- dataset, virtual environment, and large local artefacts excluded from version control.
 
 ---
 
@@ -166,15 +192,14 @@ Then: **Kernel → Restart & Run All**.
 
 | Member | Branch |
 |--------|--------|
-| Dorin (AVD) | `dev/avd` |
-| Member 2 | `dev/<initials>` |
-| Member 3 | `dev/<initials>` |
+| **Dorin-Emilian Avram** | `dev/avd` |
+| **Vadim Steshkov** | `dev/vad` |
+| **Angelo Ottendorfer** | `dev/ang` |
 
 ---
 
-## Rules
+## Notes
 
-- Do **not** commit `data/`, `venv/`, or model weight files.
-- Keep all experiments reproducible (fixed seeds, documented hyperparameters).
-- Always compare experiments using the **same** train/test split and evaluation pipeline.
-- Code must be **executable end-to-end** from a fresh clone.
+- The `data/`, `venv/`, and model artefacts are not intended for version control.
+- The `own_images/` folder is used for qualitative evaluation in the final milestone and may remain empty in the repository except for a placeholder file.
+- Final plots and CSV summaries are generated automatically by the notebook and stored in `reports/`.
